@@ -1,3 +1,4 @@
+import os
 import openai
 
 class TextGenerator:
@@ -10,7 +11,7 @@ class TextGenerator:
         Load a pre-trained text generation model (e.g., GPT-3, GPT-2).
         This function initializes the OpenAI API client.
         """
-        openai.api_key = 'your-openai-api-key'  # Replace with your actual OpenAI API key
+        openai.api_key = os.getenv("OPENAI_API_KEY")
         return openai
 
     def generate_text(self, prompt):
