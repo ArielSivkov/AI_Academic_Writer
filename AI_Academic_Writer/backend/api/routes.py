@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Query
 from models.text_generator import generate_paper
-from models.citation_handler import check_citations
+from models.citation_handler import check_citations, citation_report
+from models.evidence_tags import check_evidence_tags
 from models.plagiarism_checker import check_plagiarism
 from models.feedback_analyzer import analyze_feedback
 
@@ -13,8 +14,12 @@ def generate_paper_endpoint(topic: str = Query(..., description="The topic of th
 
 @router.get("/check-citations")
 def check_citations_endpoint(paper: str = Query(..., description="The academic paper to check citations for")):
-    citations_valid = check_citations(paper)
-    return {"citations_valid": citations_valid}
+    report = citation_report(paper)
+    return {"citations_valid": report["total"] > 0 and not report["problems"], "report": report}
+
+@router.get("/check-evidence-tags")
+def check_evidence_tags_endpoint(paper: str = Query(..., description="The paper to check for evidence tags")):
+    return check_evidence_tags(paper)
 
 @router.get("/check-plagiarism")
 def check_plagiarism_endpoint(paper: str = Query(..., description="The academic paper to check for plagiarism")):
